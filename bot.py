@@ -4,10 +4,13 @@ from dotenv import dotenv_values
 from backend import get_random_agressive_line, generate_random_ip
 from users.users import create_user
 
+from keyboards import test_keyboard
+
+
 
 config = dotenv_values()
 
-bot = Bot(token=config["TOKEN"])
+bot = Bot(token=config["BOT_TOKEN"])
 
 dp = Dispatcher()
 
@@ -21,9 +24,14 @@ async def start_cmd(message):
         "username": message.from_user.username,
         "language_code": message.from_user.language_code
     }
-create_user(user_id = user_id, config = config)
-first_name = config['first_name']
-await message.reply(f)
+    create_user(user_id = user_id, config = config)
+    first_name = config['first_name']
+    await message.reply("Тест", reply_markup=test_keyboard())
+
+
+@dp.callback_query(F.data == 'test')
+async def answer_query(callback):
+    await callback.message.reply('Успещный тест')
 
 
 @dp.message(F.text)
